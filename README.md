@@ -1,5 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+In-progress visualizer for dijkstra's algorithm (more to come maybe)
+
 ## Available Scripts
 
 In the project directory, you can run:
