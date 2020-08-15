@@ -2,7 +2,7 @@ import React, { Component, createContext } from "react";
 import Node from "./Node/Node";
 
 import "./PathfindingVisualizer.css";
-import { dijkstra } from "../algorithms/dijkstra";
+import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 
 const START_NODE_COL = 15;
 const START_NODE_ROW = 10;
@@ -40,14 +40,27 @@ export default class PathfindingVisualizer extends Component {
     for (let i = 0; i < visitedNodesInOrder.length; i++) {
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
-        const newGrid = this.state.grid.slice();
-        const newNode = {
-          ...node,
-          isVisited: true,
-        };
-        newGrid[node.row][node.col] = newNode;
-        this.setState({ grid: newGrid });
-      }, 25 * i);
+        // const newGrid = this.state.grid.slice();
+        // const newNode = {
+        //   ...node,
+        //   isVisited: true,
+        // };
+        // newGrid[node.row][node.col] = newNode;
+        // console.log(document.getElementById(`node-${node.row}-${node.col}`));
+        if ((node.row == START_NODE_ROW && node.col == START_NODE_COL) || (node.row == FINISH_NODE_ROW && node.col == FINISH_NODE_COL))
+        {} else // BAD
+        document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
+        //this.setState({ grid: newGrid });
+      }, 10 * i);
+    }
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+      setTimeout(() => {
+      const node = nodesInShortestPathOrder[i];
+      if ((node.row == START_NODE_ROW && node.col == START_NODE_COL) || (node.row == FINISH_NODE_ROW && node.col == FINISH_NODE_COL))
+        {} else // BAD
+      document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-path';
+      }, visitedNodesInOrder.length*10 + 10 * i);
+      
     }
   }
 
@@ -56,7 +69,9 @@ export default class PathfindingVisualizer extends Component {
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-    this.animateDijkstra(visitedNodesInOrder);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode)
+    console.log(nodesInShortestPathOrder);
+    this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
   render() {
@@ -74,13 +89,16 @@ export default class PathfindingVisualizer extends Component {
             return (
               <div key={rowIdx}>
                 {row.map((node, nodeIdx) => {
-                  const { isStart, isFinish, isVisited, isWall } = node;
+                  const { isStart, isFinish, isVisited, isWall, row, col, isPath } = node;
                   return (
                     <Node
                       key={nodeIdx}
                       isStart={isStart}
                       isFinish={isFinish}
                       isVisited={isVisited}
+                      row = {row}
+                      col = {col}
+                      isPath = {isPath}
                       //  isWall={isWall}
                       //  mouseIsPressed={mouseIsPressed}
                       //  onMouseDown={(row, col) => this.handleMouseDown(row, col)}
@@ -88,7 +106,7 @@ export default class PathfindingVisualizer extends Component {
                       //     this.handleMouseEnter(row, col)
                       //   }
                       //   onMouseUp={() => this.handleMouseUp()}
-                      //   row={row}
+                      // row={row}
                     ></Node> // to get rid of error have to add a key
                   );
                 })}
@@ -107,6 +125,7 @@ const getInitialGrid = () => {
     const currentRow = [];
     for (let col = 0; col < 50; col++) {
       currentRow.push(createNode(col, row));
+      console.log(row + " " + col);
     }
     grid.push(currentRow);
   }
@@ -121,6 +140,7 @@ const createNode = (col, row) => {
     isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
     distance: Infinity,
     isVisited: false,
+    isPath: false,
     isWall: false,
     previousNode: null,
   };

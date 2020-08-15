@@ -8,6 +8,7 @@ export default class Node extends Component {
       col,
       isFinish,
       isStart,
+      isPath,
       isWall,
       //   onMouseDown,
       //   onMouseEnter,
@@ -16,11 +17,13 @@ export default class Node extends Component {
       isVisited,
     } = this.props;
     const extraClassName = isFinish
-      ? "node-finish"
+      ? "node-finish"  
       : isStart
       ? "node-start"
       : isVisited
       ? "node-visited"
+      : isPath
+      ? "node-path"
       : "";
 
     return (

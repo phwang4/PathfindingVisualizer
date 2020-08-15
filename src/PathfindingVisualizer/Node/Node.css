@@ -16,3 +16,7 @@
 .node-visited {
   background-color: blue;
 }
+
+.node-path {
+  background-color: yellow;
+}
