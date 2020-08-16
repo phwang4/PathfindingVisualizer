@@ -8,31 +8,27 @@ export default class Node extends Component {
       col,
       isFinish,
       isStart,
-      isPath,
       isWall,
-      //   onMouseDown,
-      //   onMouseEnter,
-      //   onMouseUp,
+      onMouseDown,
+      onMouseEnter,
+      onMouseUp,
       row,
-      isVisited,
     } = this.props;
     const extraClassName = isFinish
       ? "node-finish"  
       : isStart
       ? "node-start"
-      : isVisited
-      ? "node-visited"
-      : isPath
-      ? "node-path"
+      : isWall
+      ? "node-wall"
       : "";
 
     return (
       <div
         id={`node-${row}-${col}`}
         className={`node ${extraClassName}`}
-        // onMouseDown={() => onMouseDown(row, col)}
-        // onMouseEnter={() => onMouseEnter(row, col)}
-        // onMouseUp={() => onMouseUp(row, col)}
+        onMouseEnter={() => onMouseEnter(row, col)}
+        onMouseDown={() => onMouseDown(row, col)}
+        onMouseUp={() => onMouseUp()}
       ></div>
     );
   }

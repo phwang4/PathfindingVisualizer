@@ -1,4 +1,4 @@
-import React, { Component, createContext } from "react";
+import React, { Component } from "react";
 import Node from "./Node/Node";
 
 import "./PathfindingVisualizer.css";
@@ -22,44 +22,46 @@ export default class PathfindingVisualizer extends Component {
     const grid = getInitialGrid();
     this.setState({ grid });
   }
+
   handleMouseDown(row, col) {
     const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
     this.setState({ grid: newGrid, mouseIsPressed: true });
+    console.log("down");
   }
 
   handleMouseEnter(row, col) {
-    if (!this.state.mouseIsPressed) return;
+    if (!this.state.mouseIsPressed) {
+      return;
+    }
+    else {
     const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
     this.setState({ grid: newGrid });
+    console.log("enter");
+  }
   }
   handleMouseUp() {
     this.setState({ mouseIsPressed: false });
+    console.log("up")
   }
 
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i < visitedNodesInOrder.length; i++) {
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
-        // const newGrid = this.state.grid.slice();
-        // const newNode = {
-        //   ...node,
-        //   isVisited: true,
-        // };
-        // newGrid[node.row][node.col] = newNode;
-        // console.log(document.getElementById(`node-${node.row}-${node.col}`));
-        if ((node.row == START_NODE_ROW && node.col == START_NODE_COL) || (node.row == FINISH_NODE_ROW && node.col == FINISH_NODE_COL))
+        if ((node.row === START_NODE_ROW && node.col === START_NODE_COL) ||
+         (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL))
         {} else // BAD
         document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
-        //this.setState({ grid: newGrid });
       }, 10 * i);
     }
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
       const node = nodesInShortestPathOrder[i];
-      if ((node.row == START_NODE_ROW && node.col == START_NODE_COL) || (node.row == FINISH_NODE_ROW && node.col == FINISH_NODE_COL))
+      if ((node.row === START_NODE_ROW && node.col === START_NODE_COL) ||
+       (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL))
         {} else // BAD
-      document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-path';
-      }, visitedNodesInOrder.length*10 + 10 * i);
+      document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-shortest-path';
+      }, visitedNodesInOrder.length*10 + 50 * i);
       
     }
   }
@@ -70,43 +72,38 @@ export default class PathfindingVisualizer extends Component {
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode)
-    console.log(nodesInShortestPathOrder);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
   render() {
-    const { grid } = this.state;
+    const { grid, mouseIsPressed } = this.state;
     return (
       <>
         <button onClick={() => this.visualizeDijkstra()}>
           Visualize Dijkstra's Algorithm
         </button>
-        {/* <button onClick={() => console.log(grid.length + " " + grid[0].length)}>
-          Test
-        </button> */}
         <div className="grid">
           {grid.map((row, rowIdx) => {
             return (
               <div key={rowIdx}>
                 {row.map((node, nodeIdx) => {
-                  const { isStart, isFinish, isVisited, isWall, row, col, isPath } = node;
+                  const { isStart, isFinish, isWall, row, col, isPath } = node;
                   return (
                     <Node
                       key={nodeIdx}
                       isStart={isStart}
                       isFinish={isFinish}
-                      isVisited={isVisited}
+                      // isVisited={isVisited}
                       row = {row}
                       col = {col}
                       isPath = {isPath}
-                      //  isWall={isWall}
-                      //  mouseIsPressed={mouseIsPressed}
-                      //  onMouseDown={(row, col) => this.handleMouseDown(row, col)}
-                      //  onMouseEnter={(row, col) =>
-                      //     this.handleMouseEnter(row, col)
-                      //   }
-                      //   onMouseUp={() => this.handleMouseUp()}
-                      // row={row}
+                      isWall={isWall}
+                      mouseIsPressed={mouseIsPressed}
+                      onMouseEnter={(row, col) =>
+                        this.handleMouseEnter(row, col)
+                      }
+                      onMouseDown={(row, col) => this.handleMouseDown(row, col)}
+                      onMouseUp={() => this.handleMouseUp()}
                     ></Node> // to get rid of error have to add a key
                   );
                 })}
@@ -125,7 +122,6 @@ const getInitialGrid = () => {
     const currentRow = [];
     for (let col = 0; col < 50; col++) {
       currentRow.push(createNode(col, row));
-      console.log(row + " " + col);
     }
     grid.push(currentRow);
   }
