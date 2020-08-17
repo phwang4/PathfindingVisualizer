@@ -1,3 +1,25 @@
 .grid {
-    margin: 100px 0 0;
+  margin: 100px 0 0;
+}
+
+.dropdown-menu {
+  min-width: 120px;
+  background-color: rgb(17, 104, 217);
+}
+
+button {
+  background-color: rgba(17, 104, 217);
+  border: none;
+  color: white;
+  padding: 5px 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-left: 10px;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: rgb(0, 217, 159);
 }

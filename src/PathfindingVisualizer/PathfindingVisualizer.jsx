@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import Node from "./Node/Node";
-
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/js/bootstrap.js";
+import $ from "jquery";
+import Popper from "popper.js";
 import "./PathfindingVisualizer.css";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 
@@ -24,45 +28,50 @@ export default class PathfindingVisualizer extends Component {
   }
 
   handleMouseDown(row, col) {
+    console.log("down");
     const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
     this.setState({ grid: newGrid, mouseIsPressed: true });
-    console.log("down");
   }
 
   handleMouseEnter(row, col) {
-    if (!this.state.mouseIsPressed) {
-      return;
-    }
-    else {
+    console.log("enter");
+    if (!this.state.mouseIsPressed) return;
+
     const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
     this.setState({ grid: newGrid });
-    console.log("enter");
   }
-  }
+
   handleMouseUp() {
     this.setState({ mouseIsPressed: false });
-    console.log("up")
+    console.log("up");
   }
 
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i < visitedNodesInOrder.length; i++) {
       setTimeout(() => {
         const node = visitedNodesInOrder[i];
-        if ((node.row === START_NODE_ROW && node.col === START_NODE_COL) ||
-         (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL))
-        {} else // BAD
-        document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
+        if (
+          (node.row === START_NODE_ROW && node.col === START_NODE_COL) ||
+          (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL)
+        ) {
+        } // BAD
+        else
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-visited";
       }, 10 * i);
     }
     for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
       setTimeout(() => {
-      const node = nodesInShortestPathOrder[i];
-      if ((node.row === START_NODE_ROW && node.col === START_NODE_COL) ||
-       (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL))
-        {} else // BAD
-      document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-shortest-path';
-      }, visitedNodesInOrder.length*10 + 50 * i);
-      
+        const node = nodesInShortestPathOrder[i];
+        if (
+          (node.row === START_NODE_ROW && node.col === START_NODE_COL) ||
+          (node.row === FINISH_NODE_ROW && node.col === FINISH_NODE_COL)
+        ) {
+        } // BAD
+        else
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-shortest-path";
+      }, visitedNodesInOrder.length * 10 + 50 * i);
     }
   }
 
@@ -71,7 +80,7 @@ export default class PathfindingVisualizer extends Component {
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode)
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
@@ -79,10 +88,24 @@ export default class PathfindingVisualizer extends Component {
     const { grid, mouseIsPressed } = this.state;
     return (
       <>
-        <button onClick={() => this.visualizeDijkstra()}>
-          Visualize Dijkstra's Algorithm
-        </button>
-        <div className="grid">
+        <div class='dropdown'>
+          <button
+            class='btn btn-primary dropdown-toggle'
+            type='button'
+            data-toggle='dropdown'
+          >
+            Algorithms
+            <span class='caret'></span>
+          </button>
+          <ul class='dropdown-menu'>
+            <li>
+              <button type='button' onClick={() => this.visualizeDijkstra()}>
+                Dijkstra's
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div className='grid'>
           {grid.map((row, rowIdx) => {
             return (
               <div key={rowIdx}>
@@ -93,10 +116,9 @@ export default class PathfindingVisualizer extends Component {
                       key={nodeIdx}
                       isStart={isStart}
                       isFinish={isFinish}
-                      // isVisited={isVisited}
-                      row = {row}
-                      col = {col}
-                      isPath = {isPath}
+                      row={row}
+                      col={col}
+                      isPath={isPath}
                       isWall={isWall}
                       mouseIsPressed={mouseIsPressed}
                       onMouseEnter={(row, col) =>
