@@ -3,15 +3,15 @@ import Node from "./Node/Node";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
-import $ from "jquery";
-import Popper from "popper.js";
+// import $ from "jquery";
+// import Popper from "popper.js";
 import "./PathfindingVisualizer.css";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 
-const START_NODE_COL = 15;
-const START_NODE_ROW = 10;
-const FINISH_NODE_COL = 35;
-const FINISH_NODE_ROW = 10;
+var START_NODE_COL = 15;
+var START_NODE_ROW = 10;
+var FINISH_NODE_COL = 35;
+var FINISH_NODE_ROW = 10;
 
 export default class PathfindingVisualizer extends Component {
   constructor() {
@@ -19,6 +19,7 @@ export default class PathfindingVisualizer extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
+      startNodeMoving: false,
     };
   }
 
@@ -28,23 +29,62 @@ export default class PathfindingVisualizer extends Component {
   }
 
   handleMouseDown(row, col) {
-    console.log("down");
-    const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-    this.setState({ grid: newGrid, mouseIsPressed: true });
+    if (
+      document.getElementById(`node-${row}-${col}`).className ===
+      "node node-start"
+    ) {
+      this.setState({ startNodeMoving: true });
+      document.getElementById(`node-${row}-${col}`).className = "node";
+      this.setState({ mouseIsPressed: true });
+    } else {
+      const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
+      this.setState({ grid: newGrid, mouseIsPressed: true });
+    }
   }
 
   handleMouseEnter(row, col) {
-    console.log("enter");
-    if (!this.state.mouseIsPressed) return;
-
-    const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
-    this.setState({ grid: newGrid });
+    if (!this.state.mouseIsPressed) {
+      return;
+    }
+    if (this.state.startNodeMoving === true) {
+      document.getElementById(`node-${row}-${col}`).className =
+        "node node-start-moving";
+    } else {
+      const newGrid = getNewGridWithWallToggled(this.state.grid, row, col);
+      this.setState({ grid: newGrid });
+    }
   }
-
-  handleMouseUp() {
+  handleMouseOut(row, col) {
+    if (!this.state.mouseIsPressed) {
+      return;
+    }
+    if (this.state.startNodeMoving === true) {
+      document.getElementById(`node-${row}-${col}`).className = "node";
+    }
+  }
+  handleMouseUp(row, col) {
+    if (this.state.startNodeMoving) {
+      if (
+        document.getElementById(`node-${row}-${col}`).className ===
+        "node node-finish"
+      ) {
+        return; // TODO: DON'T CLASH WITH FINISH NODE
+      }
+      document.getElementById(`node-${row}-${col}`).className =
+        "node node-start";
+      this.state.startNodeMoving = false;
+    }
     this.setState({ mouseIsPressed: false });
-    console.log("up");
   }
+
+  // handleEntirePageMouseDown() {
+  //   this.setState({ mouseIsPressed: true });
+  //   console.log("down");
+  // }
+  // handleEntirePageMouseUp() {
+  //   this.setState({ mouseIsPressed: false });
+  //   console.log("up");
+  // }
 
   animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder) {
     for (let i = 0; i < visitedNodesInOrder.length; i++) {
@@ -88,23 +128,25 @@ export default class PathfindingVisualizer extends Component {
     const { grid, mouseIsPressed } = this.state;
     return (
       <>
-        <div class='dropdown'>
+        <div className='dropdown'>
           <button
-            class='btn btn-primary dropdown-toggle'
+            className='btn btn-primary dropdown-toggle'
             type='button'
             data-toggle='dropdown'
           >
             Algorithms
-            <span class='caret'></span>
+            <span className='caret'></span>
           </button>
-          <ul class='dropdown-menu'>
+          <ul className='dropdown-menu'>
             <li>
               <button type='button' onClick={() => this.visualizeDijkstra()}>
                 Dijkstra's
               </button>
             </li>
           </ul>
+          <button type='button'>Clear</button>
         </div>
+
         <div className='grid'>
           {grid.map((row, rowIdx) => {
             return (
@@ -124,8 +166,9 @@ export default class PathfindingVisualizer extends Component {
                       onMouseEnter={(row, col) =>
                         this.handleMouseEnter(row, col)
                       }
+                      onMouseOut={(row, col) => this.handleMouseOut(row, col)}
                       onMouseDown={(row, col) => this.handleMouseDown(row, col)}
-                      onMouseUp={() => this.handleMouseUp()}
+                      onMouseUp={(row, col) => this.handleMouseUp(row, col)}
                     ></Node> // to get rid of error have to add a key
                   );
                 })}
@@ -169,7 +212,7 @@ const getNewGridWithWallToggled = (grid, row, col) => {
   const node = newGrid[row][col];
   const newNode = {
     ...node, // copy all parameters but change only what's listed below
-    isWall: !node.isWall,
+    isWall: true,
   };
   newGrid[row][col] = newNode;
   return newGrid;
