@@ -2,7 +2,7 @@ import {
   sortNodesByDistance,
   getAllNodes,
   getUnvisitedNeighbors,
-} from "../algorithms/dijkstra";
+} from "./dijkstra";
 
 export function greedy(grid, startNode, finishNode) {
   const visitedNodesInOrder = [];

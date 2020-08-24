@@ -8,6 +8,7 @@ import "bootstrap/dist/js/bootstrap.js";
 import "./PathfindingVisualizer.css";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
 import { greedy } from "../algorithms/greedy";
+import { astar } from "../algorithms/astar";
 
 var START_NODE_COL = 15;
 var START_NODE_ROW = 10;
@@ -36,7 +37,6 @@ export default class PathfindingVisualizer extends Component {
     FINISH_NODE_COL = 35;
     FINISH_NODE_ROW = 10;
     const newGrid = getInitialGrid();
-    console.log(newGrid);
 
     for (let row = 0; row < 20; row++) {
       for (let col = 0; col < 50; col++) {
@@ -195,9 +195,36 @@ export default class PathfindingVisualizer extends Component {
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = greedy(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
-    console.log(visitedNodesInOrder);
-    console.log(nodesInShortestPathOrder);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
+
+  visualizeAStar() {
+    const { grid } = this.state;
+
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const visitedNodesInOrder = astar(grid, startNode, finishNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+    this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
+
+  updateGrid(grid) {
+    const newGrid = grid.slice();
+
+    for (let row = 0; row < 20; row++) {
+      for (let col = 0; col < 50; col++) {
+        if (newGrid[row][col].isVisited || newGrid[row][col].isPath) {
+          const node = newGrid[row][col];
+          const newNode = {
+            ...node,
+            isVisited: false,
+            isPath: false,
+          };
+          newGrid[row][col] = newNode;
+        }
+      }
+    }
+    return newGrid;
   }
 
   render() {
@@ -222,6 +249,11 @@ export default class PathfindingVisualizer extends Component {
             <li>
               <button type='button' onClick={() => this.visualizeGreedy()}>
                 Greedy BFS
+              </button>
+            </li>
+            <li>
+              <button type='button' onClick={() => this.visualizeAStar()}>
+                A* Search
               </button>
             </li>
           </ul>
@@ -291,9 +323,14 @@ const createNode = (col, row) => {
     isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
     distance: Infinity,
     isVisited: false,
+    isClosed: false,
     isPath: false,
     isWall: false,
     previousNode: null,
+    f: 0,
+    g: 0,
+    h: 0,
+    cost: 1,
   };
 };
 
