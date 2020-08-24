@@ -200,7 +200,6 @@ export default class PathfindingVisualizer extends Component {
 
   visualizeAStar() {
     const { grid } = this.state;
-
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = astar(grid, startNode, finishNode);
