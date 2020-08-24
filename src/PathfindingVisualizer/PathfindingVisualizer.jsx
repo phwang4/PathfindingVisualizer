@@ -7,6 +7,7 @@ import "bootstrap/dist/js/bootstrap.js";
 // import Popper from "popper.js";
 import "./PathfindingVisualizer.css";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
+import { greedy } from "../algorithms/greedy";
 
 var START_NODE_COL = 15;
 var START_NODE_ROW = 10;
@@ -188,6 +189,17 @@ export default class PathfindingVisualizer extends Component {
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
+  visualizeGreedy() {
+    const { grid } = this.state;
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const visitedNodesInOrder = greedy(grid, startNode, finishNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+    console.log(visitedNodesInOrder);
+    console.log(nodesInShortestPathOrder);
+    this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
+
   render() {
     const { grid, mouseIsPressed } = this.state;
     return (
@@ -207,6 +219,11 @@ export default class PathfindingVisualizer extends Component {
                 Dijkstra's
               </button>
             </li>
+            <li>
+              <button type='button' onClick={() => this.visualizeGreedy()}>
+                Greedy BFS
+              </button>
+            </li>
           </ul>
           <button type='button' onClick={() => this.clear()}>
             Clear
@@ -218,7 +235,14 @@ export default class PathfindingVisualizer extends Component {
             return (
               <div key={rowIdx}>
                 {row.map((node, nodeIdx) => {
-                  const { isStart, isFinish, isWall, row, col } = node;
+                  const {
+                    isStart,
+                    isFinish,
+                    isWall,
+                    row,
+                    col,
+                    isVisited,
+                  } = node;
                   return (
                     <Node
                       key={nodeIdx}
@@ -227,6 +251,7 @@ export default class PathfindingVisualizer extends Component {
                       row={row}
                       col={col}
                       isWall={isWall}
+                      isVisited={isVisited}
                       mouseIsPressed={mouseIsPressed}
                       onMouseEnter={(row, col) =>
                         this.handleMouseEnter(row, col)
