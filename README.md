@@ -15,17 +15,17 @@ Goals:
 - [ ] add button to generate a maze
 - [ ] make that maze random
 
-Dijkstra's Algorithm
+**Dijkstra's Algorithm** <br />
 This algorithm finds the shortest path between the start node and the finish node by branching out until it reaches the finish node and calculating
 the shortest path from there. This algorithm ALWAYS finds the shortest path, but can be extremely slow in that in checks a lot of useless nodes.
 
-Greedy Best First Search
+**Greedy Best First Search** <br />
 This algorithm does NOT always find the shortest path, however it is much faster than it's counterpart here.
 Greedy BFS beelines for the finish node, but upon hitting a wall will begin branching out before beelining again. Unfortunately,
 this can cause situations where the final path has to loop back because of a wall.
 
-A* Search Algorithm
-A*, pronounced A Star, combines the best of both worlds. It's as fast as Greedy BFS, but doesn't make the mistake of looping back on itself and will ALWAYS
+**AStar Search Algorithm** <br />
+AStar combines the best of both worlds. It's as fast as Greedy BFS, but doesn't make the mistake of looping back on itself and will ALWAYS
 find the shortest path like Dijkstra's.
 
 If you want to play around, check it out here https://phwang4.github.io/PathfindingVisualizer/
