@@ -4,15 +4,16 @@ Actual code is located in src/PathfindingVisualizer and src/algorithms, everythi
 This is an in-progress visualizer for dijkstra's algorithm, greedy BFS, and astar search
 
 Goals:
-[ ] Fix onmousedown issue (caused by only the nodes being responsive to mouse clicks, so if you let go outside of a node, reality desyncs)
-[ ] add ability to (easily) remove walls (technicall can have toggle, but then the animation messes up)
-[ ] if you drag a start/finish node through a wall, make the wall reappear when you leave
-[ ] add ability to redo the same circumstances with a different algorithm
-[ ] make prettier
-[ ] add weights
-[ ] make weights different depending on color (1, 2, 5, impassable)
-[ ] add button to generate a maze
-[ ] make that maze random
+
+- [ ] Fix onmousedown issue (caused by only the nodes being responsive to mouse clicks, so if you let go outside of a node, reality desyncs)
+- [ ] add ability to (easily) remove walls (technicall can have toggle, but then the animation messes up)
+- [ ] if you drag a start/finish node through a wall, make the wall reappear when you leave
+- [ ] add ability to redo the same circumstances with a different algorithm
+- [ ] make prettier
+- [ ] add weights
+- [ ] make weights different depending on color (1, 2, 5, impassable)
+- [ ] add button to generate a maze
+- [ ] make that maze random
 
 Dijkstra's Algorithm
 This algorithm finds the shortest path between the start node and the finish node by branching out until it reaches the finish node and calculating
