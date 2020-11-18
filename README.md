@@ -1,6 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 Actual code is located in src/PathfindingVisualizer and src/algorithms, everything else came from starting with a React App
 
+Skeleton code taken from Clément Mihailescu's tutorial on youtube.
+
 This is an in-progress visualizer for dijkstra's algorithm, greedy BFS, and astar search
 Click and drag nodes to add walls. Click and drag the start and finish nodes to move them around. When you're satisfied with the board, click on Algorithms and choose one of the three to see how it pathfindinds from the start to the finish.
 
